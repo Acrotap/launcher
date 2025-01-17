@@ -12,107 +12,124 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #121212;
+            background-color: black;
             color: white;
         }
 
-        .settings {
-            background-color: #333;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-            padding: 20px;
-            width: 350px;
+        .container {
             text-align: center;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
         }
 
         select, input, button {
-            font-size: 1rem;
-            padding: 10px;
-            margin: 10px;
-            width: 100%;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-        }
-
-        button {
-            background-color: #FF3B3B;
+            background-color: #333;
             color: white;
-            cursor: pointer;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 1rem;
+            width: 100%;
         }
 
         button:hover {
-            background-color: #E03030;
+            background-color: #444;
         }
 
-        label {
-            font-size: 1.2rem;
+        input[type="text"] {
+            width: 50%;
         }
 
-        #customLinkContainer {
+        .cloak-settings {
             display: none;
         }
 
-        #customLinkContainer input {
-            margin-top: 10px;
+        .cloak-settings.active {
+            display: block;
+        }
+
+        .message {
+            margin-top: 15px;
+            color: #FF3B3B;
         }
     </style>
 </head>
 <body>
-    <div class="settings">
-        <h2>AB Cloaker</h2>
-
-        <label for="links">Choose Proxy Link:</label>
-        <select id="links">
-            <option value="1">Doge Unblocker Link 1</option>
-            <option value="2">Doge Unblocker Link 2</option>
-            <option value="3">Doge Unblocker Link 3</option>
-            <option value="4">Doge Unblocker Link 4</option>
-            <option value="5">Doge Unblocker Link 5</option>
-            <option value="custom">Custom Link</option>
-        </select>
-
-        <div id="customLinkContainer">
-            <label for="customLink">Custom Link URL:</label>
-            <input type="text" id="customLink" placeholder="Enter URL">
+    <div class="container">
+        <h1>AB Cloaker</h1>
+        <div>
+            <label for="link-select">Select Link:</label>
+            <select id="link-select">
+                <option value="1">Doge Unblocker Link 1</option>
+                <option value="2">Doge Unblocker Link 2</option>
+                <option value="3">Doge Unblocker Link 3</option>
+                <option value="4">Doge Unblocker Link 4</option>
+                <option value="5">Doge Unblocker Link 5</option>
+                <option value="custom">Custom Link</option>
+            </select>
         </div>
-
-        <label for="cloak">Choose Cloak:</label>
-        <select id="cloak">
-            <option value="1">None</option>
-            <option value="2">Google Drive</option>
-            <option value="3">Google Docs</option>
-            <option value="4">Google</option>
-            <option value="5">Google Classroom</option>
-        </select>
-
-        <button onclick="openLink()">Open</button>
+        <div class="cloak-settings" id="cloak-settings">
+            <label for="cloak-option">Choose Cloak:</label>
+            <select id="cloak-option">
+                <option value="1">None</option>
+                <option value="2">Google Drive</option>
+                <option value="3">Google Docs</option>
+                <option value="4">Google</option>
+                <option value="5">Google Classroom</option>
+            </select>
+        </div>
+        <div id="custom-url-container" style="display: none;">
+            <label for="custom-url">Custom Link URL:</label>
+            <input type="text" id="custom-url" placeholder="Enter custom link">
+        </div>
+        <button onclick="openCloakedLink()">Open</button>
+        <div class="message" id="error-message"></div>
     </div>
 
     <script>
+        const linkSelect = document.getElementById('link-select');
+        const cloakSelect = document.getElementById('cloak-option');
+        const cloakSettings = document.getElementById('cloak-settings');
+        const customUrlContainer = document.getElementById('custom-url-container');
+        const customUrlInput = document.getElementById('custom-url');
+        const errorMessage = document.getElementById('error-message');
+
         const url1 = "https://nzd2l7xrhi.aksnapshots.com";
         const url2 = "https://4xfdkmb1p1.hitremixes.com";
         const url3 = "https://5qi72kh7zz.teachmetofish.net";
         const url4 = "https://3dzvcp46cb.wildsurf.net";
         const url5 = "https://kjc067fi5r.cloudranger.net";
 
-        document.getElementById("links").addEventListener("change", function() {
-            const customLinkContainer = document.getElementById("customLinkContainer");
-            if (this.value === "custom") {
-                customLinkContainer.style.display = "block";
+        const cloakData = [
+            '',
+            { title: '', icon: '' },
+            { title: 'My Drive - Google Drive', icon: 'https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png' },
+            { title: 'Google Docs', icon: 'https://ssl.gstatic.com/docs/documents/images/kix-favicon-2023q4.ico' },
+            { title: 'Google', icon: 'https://www.google.com/favicon.ico' },
+            { title: 'Home', icon: 'https://www.gstatic.com/classroom/ic_product_classroom_144.png' },
+        ];
+
+        linkSelect.addEventListener('change', function() {
+            if (linkSelect.value === 'custom') {
+                customUrlContainer.style.display = 'block';
             } else {
-                customLinkContainer.style.display = "none";
+                customUrlContainer.style.display = 'none';
+                customUrlInput.value = '';
             }
+            cloakSettings.classList.toggle('active', linkSelect.value !== 'custom');
         });
 
-        function openLink() {
-            const link = document.getElementById("links").value;
-            const cloak = document.getElementById("cloak").value;
+        function openCloakedLink() {
+            const link = linkSelect.value;
             let selectedUrl = '';
 
             if (link === 'custom') {
-                selectedUrl = document.getElementById("customLink").value;
+                selectedUrl = customUrlInput.value;
                 if (!selectedUrl) {
-                    alert('Please enter a valid URL.');
+                    errorMessage.textContent = 'Please enter a valid custom link.';
                     return;
                 }
             } else {
@@ -125,33 +142,38 @@
                 }
             }
 
-            const cloakData = [
-                { title: '', icon: '' },
-                { title: 'My Drive - Google Drive', icon: 'https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png' },
-                { title: 'Google Docs', icon: 'https://ssl.gstatic.com/docs/documents/images/kix-favicon-2023q4.ico' },
-                { title: 'Google', icon: 'https://www.google.com/favicon.ico' },
-                { title: 'Home', icon: 'https://www.gstatic.com/classroom/ic_product_classroom_144.png' },
-            ];
+            const cloak = cloakSelect.value;
+            const cloakTitle = cloakData[cloak].title;
+            const cloakIcon = cloakData[cloak].icon;
 
-            const selectedCloak = cloakData[cloak];
+            if (!selectedUrl) {
+                errorMessage.textContent = 'Please select a link.';
+                return;
+            }
 
+            errorMessage.textContent = '';
+            openLink(selectedUrl, cloak !== '1', cloakTitle, cloakIcon);
+        }
+
+        function openLink(url, cloakingEnabled, title = '', icon = '') {
             const win = window.open();
             const iframe = win.document.createElement('iframe');
             iframe.style.width = "100%";
             iframe.style.height = "100%";
             iframe.style.border = "none";
-            iframe.src = selectedUrl;
+            iframe.src = url;
             win.document.body.appendChild(iframe);
 
-            if (cloak !== '1') {
-                win.document.title = selectedCloak.title;
+            if (cloakingEnabled) {
+                win.document.title = title;
                 const link = win.document.createElement("link");
                 link.rel = "icon";
-                link.href = selectedCloak.icon;
+                link.href = icon;
                 win.document.head.appendChild(link);
             }
+
+            window.location.replace("https://www.google.com");
         }
-        win.location.replace('https://www.google.com');
     </script>
 </body>
 </html>
