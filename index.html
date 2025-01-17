@@ -43,14 +43,6 @@
             width: 50%;
         }
 
-        .cloak-settings {
-            display: none;
-        }
-
-        .cloak-settings.active {
-            display: block;
-        }
-
         .message {
             margin-top: 15px;
             color: #FF3B3B;
@@ -71,7 +63,7 @@
                 <option value="custom">Custom Link</option>
             </select>
         </div>
-        <div class="cloak-settings" id="cloak-settings">
+        <div>
             <label for="cloak-option">Choose Cloak:</label>
             <select id="cloak-option">
                 <option value="1">None</option>
@@ -81,7 +73,7 @@
                 <option value="5">Google Classroom</option>
             </select>
         </div>
-        <div id="custom-url-container" style="display: none;">
+        <div id="custom-url-container">
             <label for="custom-url">Custom Link URL:</label>
             <input type="text" id="custom-url" placeholder="Enter custom link">
         </div>
@@ -92,7 +84,6 @@
     <script>
         const linkSelect = document.getElementById('link-select');
         const cloakSelect = document.getElementById('cloak-option');
-        const cloakSettings = document.getElementById('cloak-settings');
         const customUrlContainer = document.getElementById('custom-url-container');
         const customUrlInput = document.getElementById('custom-url');
         const errorMessage = document.getElementById('error-message');
@@ -119,7 +110,6 @@
                 customUrlContainer.style.display = 'none';
                 customUrlInput.value = '';
             }
-            cloakSettings.classList.toggle('active', linkSelect.value !== 'custom');
         });
 
         function openCloakedLink() {
