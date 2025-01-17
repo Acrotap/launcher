@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modernized TI-108 Calculator</title>
+    <title>Cloak Selector</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -12,226 +12,89 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background: linear-gradient(135deg, #b6c0de, #8ba6cf);
+            background-color: #000;
+            color: #fff;
         }
 
-        .calculator {
-            background-color: #0462a2;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-            padding: 20px;
-            width: 320px;
+        .container {
+            text-align: center;
         }
 
-        .display {
-            background-color: #bac4bb;
-            color: #000200;
-            font-size: 2rem;
-            border-radius: 8px;
+        select, button {
+            font-size: 1rem;
+            margin: 10px 0;
             padding: 10px;
-            text-align: right;
-            margin-bottom: 15px;
-            height: 60px;
-        }
-
-        .buttons {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+            border-radius: 5px;
+            border: none;
         }
 
         button {
-            font-size: 1.2rem;
-            padding: 15px;
-            border: none;
-            border-radius: 8px;
+            background-color: #1a73e8;
+            color: #fff;
             cursor: pointer;
-            transition: background-color 0.2s;
         }
 
-        button:active {
-            transform: scale(0.98);
-        }
-
-        .btn-number {
-            background-color: #f0f0f0;
-            color: #333;
-        }
-
-        .btn-number:hover {
-            background-color: #e0e0e0;
-        }
-
-        .btn-operation, .btn-special, .btn-clear {
-            background-color: #FF3B3B;
-            color: white;
-        }
-
-        .btn-operation:hover, .btn-special:hover, .btn-clear:hover {
-            background-color: #E03030;
+        button:hover {
+            background-color: #0f5ed6;
         }
     </style>
 </head>
 <body>
-    <div class="calculator">
-        <div class="display" id="display">0</div>
-        <div class="buttons">
-            <button class="btn-special" onclick="toggleSign()">+/-</button>
-            <button class="btn-special" onclick="calculate('%')">%</button>
-            <button class="btn-clear" onclick="clearDisplay()">C</button>
-            <button class="btn-operation" onclick="calculate('/')">&divide;</button>
-
-            <button class="btn-number" onclick="appendNumber(7)">7</button>
-            <button class="btn-number" onclick="appendNumber(8)">8</button>
-            <button class="btn-number" onclick="appendNumber(9)">9</button>
-            <button class="btn-operation" onclick="calculate('*')">&times;</button>
-
-            <button class="btn-number" onclick="appendNumber(4)">4</button>
-            <button class="btn-number" onclick="appendNumber(5)">5</button>
-            <button class="btn-number" onclick="appendNumber(6)">6</button>
-            <button class="btn-operation" onclick="calculate('-')">&minus;</button>
-
-            <button class="btn-number" onclick="appendNumber(1)">1</button>
-            <button class="btn-number" onclick="appendNumber(2)">2</button>
-            <button class="btn-number" onclick="appendNumber(3)">3</button>
-            <button class="btn-operation" onclick="calculate('+')">+</button>
-
-            <button class="btn-number" onclick="appendNumber(0)" style="grid-column: span 2;">0</button>
-            <button class="btn-number" onclick="appendNumber('.')">.</button>
-            <button class="btn-operation" onclick="computeResult()">=</button>
+    <div class="container">
+                <div>
+            <label for="link">Choose Link:</label>
+            <select id="link">
+                <option value="https://nzd2l7xrhi.aksnapshots.com">Doge Link 1</option>
+                <option value="https://4xfdkmb1p1.hitremixes.com">Doge Link 2</option>
+                <option value="https://5qi72kh7zz.teachmetofish.net">Doge Link 3</option>
+                <option value="https://3dzvcp46cb.wildsurf.net">Doge Link 4</option>
+                <option value="https://kjc067fi5r.cloudranger.net">Doge Link 5</option>
+            </select>
         </div>
+        <div>
+            <label for="cloak">Choose Cloak:</label>
+            <select id="cloak">
+                <option value="none">None</option>
+                <option value="drive">Google Drive</option>
+                <option value="docs">Google Docs</option>
+                <option value="google">Google</option>
+                <option value="classroom">Google Classroom</option>
+            </select>
+        </div>
+        <button onclick="openLink()">Open</button>
     </div>
 
     <script>
-        const display = document.getElementById('display');
-        let currentOperand = '';
-        let previousOperand = '';
-        let operation = null;
-        const maxCharacters = 15;
+        function openLink() {
+            const link = document.getElementById('link').value;
+            const cloak = document.getElementById('cloak').value;
 
-        const url1 = "https://nzd2l7xrhi.aksnapshots.com";
-        const url2 = "https://4xfdkmb1p1.hitremixes.com";
-        const url3 = "https://5qi72kh7zz.teachmetofish.net";
-        const url4 = "https://3dzvcp46cb.wildsurf.net";
-        const url5 = "https://kjc067fi5r.cloudranger.net"
+            const cloakData = {
+                none: { title: '', icon: '' },
+                drive: { title: 'My Drive - Google Drive', icon: 'https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png' },
+                docs: { title: 'Google Docs', icon: 'https://ssl.gstatic.com/docs/documents/images/kix-favicon-2023q4.ico' },
+                google: { title: 'Google', icon: 'https://www.google.com/favicon.ico' },
+                classroom: { title: 'Google Classroom', icon: 'https://www.gstatic.com/classroom/ic_product_classroom_144.png' },
+            };
 
-        let cloakTitle = '';
-        let cloakIcon = '';
-        let isCloakingEnabled = false;
-
-        function appendNumber(number) {
-            if (currentOperand.length >= maxCharacters) return;
-            if (number === '.' && currentOperand.includes('.')) return;
-            currentOperand += number;
-            updateDisplay();
-        }
-
-        function updateDisplay() {
-            display.textContent = currentOperand || '0';
-        }
-
-        function clearDisplay() {
-            currentOperand = '';
-            previousOperand = '';
-            operation = null;
-            updateDisplay();
-        }
-
-        function calculate(op) {
-            if (currentOperand === '') return;
-            if (previousOperand !== '') {
-                computeResult();
-            }
-            operation = op;
-            previousOperand = currentOperand;
-            currentOperand = '';
-        }
-
-        function computeResult() {
-            if (!operation || currentOperand === '' || previousOperand === '') return;
-            const prev = parseFloat(previousOperand);
-            const curr = parseFloat(currentOperand);
-            let result;
-            switch (operation) {
-                case '+': result = prev + curr; break;
-                case '-': result = prev - curr; break;
-                case '*': result = prev * curr; break;
-                case '/': result = curr !== 0 ? prev / curr : 'Error'; break;
-                case '%': result = prev % curr; break;
-                default: return;
-            }
-            currentOperand = result.toString().slice(0, maxCharacters);
-            operation = null;
-            previousOperand = '';
-            updateDisplay();
-        }
-
-        function toggleSign() {
-            currentOperand = currentOperand.startsWith('-')
-                ? currentOperand.slice(1)
-                : '-' + currentOperand;
-            updateDisplay();
-        }
-
-        document.addEventListener('keydown', (event) => {
-            if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 'z') {
-                const proxy = prompt('Choose a proxy link:\n1. Doge Unblocker Link 1\n2. Doge Unblocker Link 2\n3. Doge Unblocker Link 3\n4. Doge Unblocker Link 4\n5. Doge Unblocker Link 5');
-                const proxyOptions = ['1', '2', '3', '4',"5"];
-                if (!proxyOptions.includes(proxy)) {
-                    alert('You must enter a number from 1 to 5.');
-                    return;
-                }
-
-                const cloak = prompt('Choose cloak:\n1. None\n2. Google Drive\n3. Google Docs\n4. Google\n5. Google Classroom');
-                const cloakOptions = ['1', '2', '3', '4', '5'];
-                if (!cloakOptions.includes(cloak)) {
-                    alert('You must enter a number from 1 to 5.');
-                    return;
-                }
-
-                let selectedUrl;
-                switch (proxy) {
-                    case '1': selectedUrl = url1; break;
-                    case '2': selectedUrl = url2; break;
-                    case '3': selectedUrl = url3; break;
-                    case '4': selectedUrl = url4; break;
-                    case '5': selectedUrl = url5; break;
-                }
-
-                if (cloak === '1') {
-                    openLink(selectedUrl, false);
-                } else {
-                    const cloakData = [
-                        '',
-                        { title: '', icon: '' },
-                        { title: 'My Drive - Google Drive', icon: 'https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png' },
-                        { title: 'Google Docs', icon: 'https://ssl.gstatic.com/docs/documents/images/kix-favicon-2023q4.ico' },
-                        { title: 'Google', icon: 'https://www.google.com/favicon.ico' },
-                        { title: 'Home', icon: 'https://www.gstatic.com/classroom/ic_product_classroom_144.png' },
-                    ];
-                    openLink(selectedUrl, true, cloakData[cloak].title, cloakData[cloak].icon);
-                }
-            }
-        });
-
-        function openLink(url, cloakingEnabled, title = '', icon = '') {
-            const win = window.open();
+            const win = window.open('about:blank');
             const iframe = win.document.createElement('iframe');
             iframe.style.width = "100%";
             iframe.style.height = "100%";
             iframe.style.border = "none";
-            iframe.src = url;
+            iframe.src = link;
             win.document.body.appendChild(iframe);
 
-            if (cloakingEnabled) {
-                win.document.title = title;
-                const link = win.document.createElement("link");
-                link.rel = "icon";
-                link.href = icon;
-                win.document.head.appendChild(link);
+            if (cloak !== 'none') {
+                win.document.title = cloakData[cloak].title;
+                const linkElement = win.document.createElement("link");
+                linkElement.rel = "icon";
+                linkElement.href = cloakData[cloak].icon;
+                win.document.head.appendChild(linkElement);
             }
+
+            window.location.replace("https://www.google.com");
         }
     </script>
 </body>
 </html>
-
