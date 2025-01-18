@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AB Cloaker</title>
+    <title>Google</title>
+    <link rel="icon" href="https://www.google.com/favicon.ico">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -24,7 +25,7 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
         }
 
-        select, input, button {
+        select, button {
             background-color: #333;
             color: white;
             padding: 10px;
@@ -39,32 +40,23 @@
             background-color: #444;
         }
 
-        input[type="text"] {
-            width: 50%;
-        }
-
         .message {
             margin-top: 15px;
             color: #FF3B3B;
-        }
-
-        #custom-url-container {
-            display: none;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>AB Cloaker</h1>
+        <h1>Proxy Launcher</h1>
         <div>
-            <label for="link-select">Select Link:</label>
+            <label for="link-select">Select Proxy:</label>
             <select id="link-select">
                 <option value="1">Doge Unblocker Link 1</option>
                 <option value="2">Doge Unblocker Link 2</option>
                 <option value="3">Doge Unblocker Link 3</option>
                 <option value="4">Doge Unblocker Link 4</option>
                 <option value="5">Doge Unblocker Link 5</option>
-                <option value="custom">Custom Link</option>
             </select>
         </div>
         <div>
@@ -77,10 +69,6 @@
                 <option value="5">Google Classroom</option>
             </select>
         </div>
-        <div id="custom-url-container">
-            <label for="custom-url">Custom Link URL:</label>
-            <input type="text" id="custom-url" placeholder="Enter custom link">
-        </div>
         <button onclick="openCloakedLink()">Open</button>
         <div class="message" id="error-message"></div>
     </div>
@@ -88,8 +76,6 @@
     <script>
         const linkSelect = document.getElementById('link-select');
         const cloakSelect = document.getElementById('cloak-option');
-        const customUrlContainer = document.getElementById('custom-url-container');
-        const customUrlInput = document.getElementById('custom-url');
         const errorMessage = document.getElementById('error-message');
 
         const url1 = "https://nzd2l7xrhi.aksnapshots.com";
@@ -107,33 +93,16 @@
             { title: 'Home', icon: 'https://www.gstatic.com/classroom/ic_product_classroom_144.png' },
         ];
 
-        linkSelect.addEventListener('change', function() {
-            if (linkSelect.value === 'custom') {
-                customUrlContainer.style.display = 'block';
-            } else {
-                customUrlContainer.style.display = 'none';
-                customUrlInput.value = '';
-            }
-        });
-
         function openCloakedLink() {
             const link = linkSelect.value;
             let selectedUrl = '';
 
-            if (link === 'custom') {
-                selectedUrl = customUrlInput.value;
-                if (!selectedUrl) {
-                    errorMessage.textContent = 'Please enter a valid custom link.';
-                    return;
-                }
-            } else {
-                switch (link) {
-                    case '1': selectedUrl = url1; break;
-                    case '2': selectedUrl = url2; break;
-                    case '3': selectedUrl = url3; break;
-                    case '4': selectedUrl = url4; break;
-                    case '5': selectedUrl = url5; break;
-                }
+            switch (link) {
+                case '1': selectedUrl = url1; break;
+                case '2': selectedUrl = url2; break;
+                case '3': selectedUrl = url3; break;
+                case '4': selectedUrl = url4; break;
+                case '5': selectedUrl = url5; break;
             }
 
             const cloak = cloakSelect.value;
@@ -141,7 +110,7 @@
             const cloakIcon = cloakData[cloak].icon;
 
             if (!selectedUrl) {
-                errorMessage.textContent = 'Please select a link.';
+                errorMessage.textContent = 'Please select a proxy.';
                 return;
             }
 
